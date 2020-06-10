@@ -178,7 +178,7 @@ class RetroScore:
         for ix in range(X.shape[0]):
             retro_scores[ix] = self.calculate_score(y_pred[ix], ymean_nbs[ix], avg_dist_X[ix])
 
-        return retro_scores
+        return retro_scores, neighbors_x, neighbors_y
 
 
     def calculate_score(self, y_pred, y_nbs_mean, dist_X):
@@ -388,6 +388,13 @@ def run_retro_score(rs, X_train, y_train, X_test, y_pred, y_train_pred, discarde
 
     retro_score_unn : numpy array
         The unnormalized RETRO-scores.
+
+    x_nbs : numpy array
+        The x-values of the neighboring instances.
+
+    y_nbs : numpy array
+        The y-values of the neighboring instances.
+
     """
 
     # reshaping y arrays (in case they're not in right format)
@@ -400,10 +407,10 @@ def run_retro_score(rs, X_train, y_train, X_test, y_pred, y_train_pred, discarde
     rs.filter_errors(y_train_pred, discarded_errors=10)
 
     # calculating the retro score
-    retro_score_unn = rs.get_score(X_test, y_pred, dimred)
+    retro_score_unn, x_nbs, y_nbs = rs.get_score(X_test, y_pred, dimred)
 
     # normalizing the retro score
     retro_score_train = rs.get_score_train(X_train, y_train_pred)
     retro_score = rs.normalize(retro_score_train, retro_score_unn)
 
-    return retro_score, retro_score_unn
+    return retro_score, retro_score_unn, x_nbs, y_nbs
