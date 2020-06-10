@@ -142,12 +142,15 @@ class RetroScore:
         # average distance to the neighbors (in feature values)
         avg_dist_X = np.mean(np.absolute(dist_closest_X),axis=1)
 
-        # initiate arrays to store the feature values and labels of neighbors
+        # initiate arrays to store the feature values of neighbors
+        # we need these in case we want to visualize them
         if dimred:
+            # keep the not-dimensionality-reduced instances to display
             neighbors_x = np.zeros((X.shape[0], self.k, self.X_train_unred.shape[1]))
         else:
             neighbors_x = np.zeros((X.shape[0], self.k, X.shape[1]))
 
+        # initialize array for target values of neighbors
         neighbors_y = np.zeros((X.shape[0], self.k))
 
         # for each point and neighbor, find feature values/labels
@@ -169,16 +172,16 @@ class RetroScore:
         ymean_nbs = np.mean(neighbors_y, axis=1).reshape(X.shape[0],-1)
 
         # initialize empty array for retro scores
-        retro_scores = np.tile(None, (X.shape[0], 3))
+        retro_scores = np.tile(None, (X.shape[0],1))
 
         # calculate the retro score
         for ix in range(X.shape[0]):
-            retro_scores[ix,:] = self.dist_to_mean(y_pred[ix], ymean_nbs[ix], avg_dist_X[ix])
+            retro_scores[ix] = self.calculate_score(y_pred[ix], ymean_nbs[ix], avg_dist_X[ix])
 
         return retro_scores
 
 
-    def dist_to_mean(self, y_pred, y_nbs_mean, dist_X):
+    def calculate_score(self, y_pred, y_nbs_mean, dist_X):
 
         """
         Calculating the distance of an instance to its neighbors in the y-dimension
@@ -219,10 +222,7 @@ class RetroScore:
         # calculating the retro score
         retro = -(weighted_y_dist + weighted_x_dist)
 
-        # return full retro score and its components
-        components = np.array([retro, weighted_x_dist, weighted_y_dist])
-
-        return components
+        return retro
 
 
     def get_score_train(self, X, y_pred):
@@ -271,11 +271,11 @@ class RetroScore:
         ymean_nbs = np.mean(neighbors_val, axis=1).reshape(X.shape[0],-1)
 
         # initialize empty array for retro scores
-        retro_scores = np.tile(None, (X.shape[0], 3))
+        retro_scores = np.tile(None, (X.shape[0], 1))
 
         # calculate the retro score
         for ix in range(X.shape[0]):
-            retro_scores[ix,:] = self.dist_to_mean(y_pred[ix], ymean_nbs[ix], avg_dist_X[ix])
+            retro_scores[ix] = self.calculate_score(y_pred[ix], ymean_nbs[ix], avg_dist_X[ix])
 
         return retro_scores
 
@@ -404,6 +404,6 @@ def run_retro_score(rs, X_train, y_train, X_test, y_pred, y_train_pred, discarde
 
     # normalizing the retro score
     retro_score_train = rs.get_score_train(X_train, y_train_pred)
-    retro_score = rs.normalize(retro_score_train[:,0], retro_score_unn[:,0])
+    retro_score = rs.normalize(retro_score_train, retro_score_unn)
 
     return retro_score, retro_score_unn

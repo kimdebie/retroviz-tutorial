@@ -42,7 +42,7 @@ def rs_at_threshold_plot(rs, y_test, y_pred, normalized=True):
     error = abs(y_test.reshape(-1, 1)-y_pred.reshape(-1,1))
 
     # calculate pearson correlation for error and RETRO score
-    p_corr, pvalue = pearsonr(list(error.flatten()), list(rs))
+    p_corr, pvalue = pearsonr(list(error.flatten()), list(rs.flatten()))
 
     # set error thresholds: binning
     bins = np.histogram(error, bins=10)[1].astype('float')
@@ -59,8 +59,8 @@ def rs_at_threshold_plot(rs, y_test, y_pred, normalized=True):
     std = df.groupby("bin").std()["rs"].reset_index().fillna(1e-6)
 
     # plotting
-    plt.plot(mean.bin, mean.ts, '-o')
-    plt.fill_between(mean.bin, mean.ts-std.ts, mean.ts+std.ts, alpha=.1)
+    plt.plot(mean.bin, mean.rs, '-o')
+    plt.fill_between(mean.bin, mean.rs-std.rs, mean.rs+std.rs, alpha=.1)
     plt.xlabel("Maximum error")
     plt.ylabel("Average trust score")
     plt.title(f"Maximum error vs. average RETRO-score (corr: {round(p_corr,3)})")
@@ -100,7 +100,7 @@ def overlapping_points(rs, errors, frac=50):
 
     # index indicates order of array when sorted
     error_ix = errors.argsort()
-    rs_ix = rs.argsort()[::-1]
+    rs_ix = rs.flatten().argsort()[::-1]
 
     # index up to/from which the points should be selected
     mid = int(error_ix.shape[0]-error_ix.shape[0]/100*frac)
