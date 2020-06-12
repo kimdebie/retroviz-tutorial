@@ -6,4 +6,4 @@ The VIZ-plots are created from `.json` files. An example can be found in this fo
 
 To view the example VIZ-plot, run `python -m http.server` from this folder to start a local server. More plots are available at `www.kimdebie.nl/TODO`.
 
-![alt text](https://github.com/kimdebie/retroviz/blob/master/viz/vizplot.PNG) "Example VIZ-plot")
+![alt text](https://github.com/kimdebie/retroviz/blob/master/viz/vizplot.PNG "Example VIZ-plot")
