@@ -12,7 +12,7 @@ sys.path.append('../')
 
 def sample_new_point(X_test, y_test, i=None):
 
-    '''
+    """
     Sample a random point from the test data.
 
     Parameters
@@ -35,7 +35,7 @@ def sample_new_point(X_test, y_test, i=None):
 
     y_test : numpy object
         Sampled label.
-    '''
+    """
 
     # select a random point or given
     if i is not None:
@@ -52,6 +52,29 @@ def sample_new_point(X_test, y_test, i=None):
 
 def get_range(scaler, test_unscaled):
 
+    """
+    Obtain minimum and maximum value of data to use on axis.
+
+    Parameters
+    ----------
+
+    scaler : sklearn scaler
+        From the scaler, we obtain the min/max on the train set.
+
+    test_unscaled : numpy array
+        For the min/max on the test set.
+
+    Returns
+    -------
+
+    minimum : float
+        Minimum value across the train and test set.
+
+    maximum : float
+        Maximum value across the train and test set.
+
+    """
+
     # get minimum and maximum
 
     min_test = np.amin(test_unscaled, axis=0)
@@ -65,7 +88,7 @@ def get_range(scaler, test_unscaled):
 
 def make_dict_df(X1, y1, X2, y2, X_vars, y_var, concat_data=True):
 
-    '''
+    """
     Turn data into dataframe, then dictionary, to be passed to D3.
     Either concatenating points and neighboring points, or minimum
     and maximum of range.
@@ -100,7 +123,7 @@ def make_dict_df(X1, y1, X2, y2, X_vars, y_var, concat_data=True):
     final_data : dict
         Dictionary of all datapoints.
 
-    '''
+    """
 
     # place all data together
     X = np.concatenate((X1, X2), axis=0)
@@ -126,22 +149,9 @@ def make_dict_df(X1, y1, X2, y2, X_vars, y_var, concat_data=True):
     return final_data
 
 
-def sort_axes(data, axes, sort_type="similarity"):
+def sort_axes(data, axes):
 
-    if sort_type == "similarity":
-        sorted_axes = sort_axes_similarity(data, axes)
-
-
-    # get in right format, so that it can be passed to javascript
-    df = pd.DataFrame(sorted_axes, columns=["axes"])
-    df.to_dict()['axes']
-
-    return sorted_axes
-
-
-def sort_axes_similarity(data, axes):
-
-    '''
+    """
     Sort axes according to similarity. Method from Massie (2004).
 
     Parameters
@@ -158,7 +168,8 @@ def sort_axes_similarity(data, axes):
 
     sorted_axes : list
         Sorted version of axes.
-    '''
+        
+    """
 
     axes_new = deepcopy(axes)
 

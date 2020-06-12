@@ -86,7 +86,7 @@ class DataLoader:
 
         """
         Revert scaling of features to the orginal feature values, after they
-        have been scaled.
+        have been scaled. Used for creating VIZ-plots.
 
         Parameters
         ----------
